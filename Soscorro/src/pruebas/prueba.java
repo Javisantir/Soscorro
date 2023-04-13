@@ -7,6 +7,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import datos.Usuario;
+import datos.amistad;
 
 @Path("/prueba")
 public class prueba {	
@@ -16,7 +17,9 @@ public class prueba {
 	{
 		Usuario user = new Usuario();
 		user.setName("Andres");
-		user.setId(0);
-		return Response.status(Response.Status.OK).entity(user).build();
+		Usuario user1 = new Usuario();
+		user.setName("javi");
+		amistad amigos = new amistad(user,user1);
+		return Response.status(Response.Status.OK).entity(amigos).build();
 	}
 }
