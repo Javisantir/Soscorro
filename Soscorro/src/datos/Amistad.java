@@ -19,9 +19,9 @@ public class Amistad {
 	}
 	
 	@XmlElement(name="usuario")
-	public Usuario getUsuario()
+	public int getUsuarioID()
 	{
-		return usuario;
+		return usuario.id;
 	}
 	
 	public void setUsuario(Usuario usuario)
@@ -30,9 +30,9 @@ public class Amistad {
 	}
 	
 	@XmlElement(name="amigo")
-	public Usuario getAmigo()
+	public int getAmigoID()
 	{
-		return amigo;
+		return amigo.id;
 	}
 	
 	public void setAmigo(Usuario amigo)

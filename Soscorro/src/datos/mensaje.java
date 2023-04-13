@@ -6,16 +6,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="mensaje")
-public class mensaje {
+public class Mensaje {
 	
 	int mensajeId; //TODO ver como automatizar los ids
 	String mensajeContenido;
 	String mensajeFecha;
 	
-	public mensaje() 
+	public Mensaje() 
 	{}
 	
-	public mensaje(String mensajeContenido)
+	public Mensaje(String mensajeContenido)
 	{
 		this.mensajeId = 0;
 		this.mensajeFecha = LocalDate.now().toString();
