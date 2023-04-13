@@ -29,4 +29,15 @@ public class amistad {
 		this.usuario=usuario;
 	}
 	
+	@XmlElement(name="amigo")
+	public Usuario getAmigo()
+	{
+		return amigo;
+	}
+	
+	public void setAmigo(Usuario amigo)
+	{
+		this.usuario=amigo;
+	}
+	
 }
