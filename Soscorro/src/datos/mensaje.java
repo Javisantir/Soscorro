@@ -10,7 +10,7 @@ public class mensaje {
 	
 	int mensajeId; //TODO ver como automatizar los ids
 	String mensajeContenido;
-	LocalDate mensajeFecha;
+	String mensajeFecha;
 	
 	public mensaje() 
 	{}
@@ -18,7 +18,7 @@ public class mensaje {
 	public mensaje(String mensajeContenido)
 	{
 		this.mensajeId = 0;
-		this.mensajeFecha = mensajeFecha.now();
+		this.mensajeFecha = LocalDate.now().toString();
 		this.mensajeContenido = mensajeContenido;
 	}
 	
@@ -34,9 +34,14 @@ public class mensaje {
 	}
 	
 	@XmlElement(name="fecha_mensaje")
-	public LocalDate get()
+	public String getMensajeFecha()
 	{
 		return mensajeFecha;
+	}
+	
+	public void setMensajeFecha(LocalDate fecha)
+	{
+		this.mensajeFecha=fecha.now().toString();
 	}
 	
 	@XmlElement(name="contenido_mensaje")
