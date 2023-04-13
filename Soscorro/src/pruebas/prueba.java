@@ -7,7 +7,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import datos.Usuario;
-import datos.amistad;
+import datos.mensaje;
 
 @Path("/prueba")
 public class prueba {	
@@ -19,7 +19,7 @@ public class prueba {
 		user.setName("Andres");
 		Usuario user1 = new Usuario();
 		user.setName("javi");
-		amistad amigos = new amistad(user,user1);
-		return Response.status(Response.Status.OK).entity(amigos).build();
+		mensaje ms = new mensaje("Tu madre es una mujer especial");
+		return Response.status(Response.Status.OK).entity(ms).build();
 	}
 }

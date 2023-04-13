@@ -4,15 +4,15 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="amistad")
-public class amistad {
+public class Amistad {
 	
 	Usuario usuario;
 	Usuario amigo;
 	
-	public amistad()
+	public Amistad()
 	{	}
 	
-	public amistad(Usuario usuario, Usuario amigo)
+	public Amistad(Usuario usuario, Usuario amigo)
 	{
 		this.usuario=usuario;
 		this.amigo=amigo;
