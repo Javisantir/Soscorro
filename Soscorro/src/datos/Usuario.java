@@ -10,7 +10,9 @@ public class Usuario {
 	int id; //TODO debemos pensar como meter esto, porque no debes mandar en el post el id
 	
 	public Usuario()
-	{	}
+	{	
+		super();
+	}
 	
 	public Usuario(String name)
 	{

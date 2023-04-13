@@ -22,6 +22,6 @@ public class prueba {
 		user.setName("javi");
 		Mensaje ms = new Mensaje("Tu madre es una mujer especial");
 		Amistad a = new Amistad(user,user1);
-		return Response.status(Response.Status.OK).entity(a).build();
+		return Response.status(Response.Status.OK).entity(ms).build();
 	}
 }
