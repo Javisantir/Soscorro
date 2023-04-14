@@ -15,7 +15,7 @@ USE `Soscorro` ;
 -- Table `Soscorro`.`Usuarios`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Soscorro`.`Usuarios` (
-  `userId` INT NOT NULL,
+  `userId` INT NOT NULL AUTO_INCREMENT,
   `userName` VARCHAR(45) NULL,
   PRIMARY KEY (`userId`))
 ENGINE = InnoDB;
@@ -47,7 +47,7 @@ ENGINE = InnoDB;
 -- Table `Soscorro`.`mensajes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Soscorro`.`mensajes` (
-  `messageID` INT NOT NULL,
+  `messageID` INT NOT NULL AUTO_INCREMENT,
   `userId` INT NOT NULL,
   `fecha` DATE NULL,
   `messageInfo` VARCHAR(2000),
@@ -60,11 +60,11 @@ CREATE TABLE IF NOT EXISTS `Soscorro`.`mensajes` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-INSERT INTO Usuarios
+INSERT INTO Usuarios (userName)
 VALUES 
-(0,"Javi"),
-(1,"Victor"),
-(2,"Andres");
+("Javi"),
+("Victor"),
+("Andres");
 
 INSERT INTO Users_has_friends
 VALUES 

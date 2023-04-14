@@ -84,7 +84,7 @@ public class Users
 	
 	@GET
 	@Path("{userId}")
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getGaraje(@PathParam("userId") String id) 
 	{
 		try 
@@ -117,26 +117,32 @@ public class Users
 	
 	//TODO
 	@POST
-	@Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-	public Response addUser(Usuario	user) {
+	@Consumes({MediaType.APPLICATION_JSON})
+	public Response addUser(Usuario	user) 
+	{
+		
+		System.out.println(user);
 		try {
 			Connection conn = Conexion.getInstancia().getConexion();
-			String sql = "INSERT INTO Usuarios VALUES ( " + user.getID() + ", " + user.getName()+ ");";
+			String sql = "INSERT INTO Usuarios (userId, userName) VALUES (" + user.getID() + ", \"" + user.getName() + "\");";
 			PreparedStatement ps = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 			int affectedRows = ps.executeUpdate();
 			
 			// Obtener el ID del elemento recién creado. 
 			// Necesita haber indicado Statement.RETURN_GENERATED_KEYS al ejecutar un statement.executeUpdate() o al crear un PreparedStatement
 			ResultSet generatedID = ps.getGeneratedKeys();
-			if (generatedID.next()) {
+			if (generatedID.next()) 
+			{
 				user.setId(generatedID.getInt(1));
 				String location = uriInfo.getAbsolutePath() + "/" + user.getID();
 				return Response.status(Response.Status.CREATED).entity(user).header("Location", location).header("Content-Location", location).build();
 			}
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo crear el garaje").build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo crear el usuario").build();
 			
-		} catch (SQLException e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo crear el garaje\n" + e.getStackTrace()).build();
+		} 
+		catch (SQLException e)
+		{
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD\n" + e.getStackTrace()).build();
 		}
 	}
 }
