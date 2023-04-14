@@ -45,7 +45,7 @@ public class Users
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllUsers(@QueryParam("namePattern") @DefaultValue("") String namePattern,
 			@QueryParam("offset") @DefaultValue("0") String offsetStr,
-			@QueryParam("count") @DefaultValue("-1") String countStr)
+			@QueryParam("count") @DefaultValue("10") String countStr)
 	{
 		try
 		{
@@ -54,8 +54,7 @@ public class Users
 			int offset = Integer.parseInt(offsetStr);
 			int count = Integer.parseInt(countStr);
 			
-			String paginationStr = count==-1 ? "" : "LIMIT "+offset+", "+ count+ ";";
-			String sql = "SELECT Usuarios.userId FROM Usuarios WHERE Usuarios.userName LIKE \"%"+ namePattern + "%\" ORDER BY Usuarios.userId" + paginationStr;
+			String sql = "SELECT Usuarios.userId FROM Usuarios WHERE Usuarios.userName LIKE \"%"+ namePattern + "%\" ORDER BY Usuarios.userId ASC LIMIT "+ count +" OFFSET " + offset + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			Usuarios users = new Usuarios();
