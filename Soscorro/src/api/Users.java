@@ -1,6 +1,7 @@
 package api;
 
 import java.sql.Connection;
+import bbdd.Conexion;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,19 +36,7 @@ public class Users
 
 	public Users() 
 	{
-		InitialContext ctx;
-		try {
-			ctx = new InitialContext();
-			NamingContext envCtx = (NamingContext) ctx.lookup("java:comp/env");
-
-			ds = (DataSource) envCtx.lookup("jdbc/GarajesyEmpleados");
-			conn = ds.getConnection();
-		} catch (NamingException e) {
-			e.printStackTrace();
-		} catch (SQLException e) 
-		{
-			e.printStackTrace();
-		}
+		conn = Conexion.getInstancia().getConexion();
 	}
 	
 	@GET
