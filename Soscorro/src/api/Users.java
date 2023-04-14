@@ -1,4 +1,4 @@
-package users;
+package api;
 
 import java.sql.Connection;
 import java.sql.SQLException;
