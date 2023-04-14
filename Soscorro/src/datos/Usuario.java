@@ -14,9 +14,9 @@ public class Usuario {
 		super();
 	}
 	
-	public Usuario(String name)
+	public Usuario(int id,String name)
 	{
-		this.id=0;
+		this.id=id;
 		this.name=name;
 	}
 	
@@ -40,5 +40,10 @@ public class Usuario {
 	public void setId(int id)
 	{
 		this.id=id;
+	}
+	
+	public String toString()
+	{
+		return "Usuario con id="+ id +"; name="+name;
 	}
 }
