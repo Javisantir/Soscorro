@@ -43,9 +43,7 @@ public class Users
 	private UriInfo uriInfo;
 
 	public Users() 
-	{
-		
-	}
+	{	}
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
