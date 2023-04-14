@@ -33,12 +33,12 @@ CREATE TABLE IF NOT EXISTS `Soscorro`.`Users_has_friends` (
   CONSTRAINT `fk_Usuarios_has_Usuarios_Usuarios`
     FOREIGN KEY (`userId`)
     REFERENCES `Soscorro`.`Usuarios` (`userId`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Usuarios_has_Usuarios_Usuarios1`
     FOREIGN KEY (`friendId`)
     REFERENCES `Soscorro`.`Usuarios` (`userId`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `Soscorro`.`mensajes` (
   CONSTRAINT `fk_mensajes_Usuarios1`
     FOREIGN KEY (`userId`)
     REFERENCES `Soscorro`.`Usuarios` (`userId`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 

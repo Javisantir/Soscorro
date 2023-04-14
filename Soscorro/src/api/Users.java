@@ -15,6 +15,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -114,6 +115,22 @@ public class Users
 		}
 	}
 	
+	@DELETE
+	@Path("{userId}")
+	public Response deleteUser(@PathParam("userId") String id) {
+		try {
+			Connection conn = Conexion.getInstancia().getConexion();
+			String sql = "DELETE FROM Soscorro.Usuarios WHERE userId=" + id + ";";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			int affectedRows = ps.executeUpdate();
+			if (affectedRows == 1)
+				return Response.status(Response.Status.NO_CONTENT).build();
+			else
+			return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();		
+		} catch (SQLException e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo eliminar el usuario\n" + e.getStackTrace()).build();
+		}
+	}
 	
 	//TODO
 	@POST
