@@ -110,10 +110,12 @@ public class Users
 		}
 		catch (NumberFormatException e) 
 		{
+			e.printStackTrace();
 			return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
 		} 
 		catch (SQLException e)
 		{
+			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
@@ -130,7 +132,9 @@ public class Users
 				return Response.status(Response.Status.NO_CONTENT).build();
 			else
 			return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();		
-		} catch (SQLException e) {
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo eliminar el usuario\n" + e.getStackTrace()).build();
 		}
 	}
@@ -167,6 +171,7 @@ public class Users
 		} 
 		catch (SQLException e)
 		{
+			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD\n" + e.getStackTrace()).build();
 		}
 	}

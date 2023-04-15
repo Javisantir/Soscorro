@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -49,7 +50,7 @@ public class Message {
 			int offset = Integer.parseInt(offsetStr);
 			int count = Integer.parseInt(countStr);
 			
-			String sql = "SELECT * FROM mensajes WHERE userId= " + userId + " AND fecha BETWEEN '" + startDateStr + "' AND '" + endDateStr + "' LIMIT "+ count +" OFFSET " + offset + ";";
+			String sql = "SELECT * FROM mensajes WHERE forumId= " + userId + " AND fechaCreacion BETWEEN '" + startDateStr + "' AND '" + endDateStr + "' LIMIT "+ count +" OFFSET " + offset + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			Mensajes messages = new Mensajes();
