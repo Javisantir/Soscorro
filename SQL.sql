@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `Soscorro`.`mensajes` (
   `forumId` INT NOT NULL,
   `fechaUltimaModificacion` DATE NOT NULL,
   `fechaCreacion` DATE NOT NULL,
-  `messageInfo` VARCHAR(2000),
+  `data` VARCHAR(2000),
   PRIMARY KEY (`messageID`),
   INDEX `fk_mensajes_Usuarios1_idx` (`creatorId` ASC),
   INDEX `fk_mensajes_Usuarios2_idx` (`forumId` ASC),
