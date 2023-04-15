@@ -48,13 +48,21 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Soscorro`.`mensajes` (
   `messageID` INT NOT NULL AUTO_INCREMENT,
-  `userId` INT NOT NULL,
-  `fecha` DATE NULL,
+  `creatorId` INT NOT NULL,
+  `forumId` INT NOT NULL,
+  `fechaUltimaModificacion` DATE NOT NULL,
+  `fechaCreacion` DATE NOT NULL,
   `messageInfo` VARCHAR(2000),
   PRIMARY KEY (`messageID`),
-  INDEX `fk_mensajes_Usuarios1_idx` (`userId` ASC),
+  INDEX `fk_mensajes_Usuarios1_idx` (`creatorId` ASC),
+  INDEX `fk_mensajes_Usuarios2_idx` (`forumId` ASC),
   CONSTRAINT `fk_mensajes_Usuarios1`
-    FOREIGN KEY (`userId`)
+    FOREIGN KEY (`creatorId`)
+    REFERENCES `Soscorro`.`Usuarios` (`userId`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_mensajes_Usuarios2`
+    FOREIGN KEY (`forumId`)
     REFERENCES `Soscorro`.`Usuarios` (`userId`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
