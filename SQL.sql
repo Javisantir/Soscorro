@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `Soscorro`.`mensajes` (
   `forumId` INT NOT NULL,
   `fechaUltimaModificacion` DATE NOT NULL,
   `fechaCreacion` DATE NOT NULL,
-  `data` TEXT,
+  `contenido` TEXT,
   PRIMARY KEY (`messageID`),
   INDEX `fk_mensajes_Usuarios1_idx` (`creatorId` ASC),
   INDEX `fk_mensajes_Usuarios2_idx` (`forumId` ASC),
@@ -80,13 +80,11 @@ VALUES
 (1,2),
 (2,0);
 
-INSERT INTO mensajes 
+INSERT INTO mensajes(creatorId,forumId,fechaUltimaModificacion,fechaCreacion,contenido) 
 VALUES 
-(0,1,'1999-12-10','Hola que tal'),
-(1,2,'2000-12-11','Hola buenas tardes'),
-(2,0,'2013-11-11','Buenas tardes');
-
-SELECT * FROM mensajes;
+(1,1,'1999-12-10','1999-12-10','Hola que tal'),
+(2,1,'2000-12-11','2000-12-11','Hola buenas tardes'),
+(0,1,'2013-11-11','2013-11-11','Buenas tardes');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

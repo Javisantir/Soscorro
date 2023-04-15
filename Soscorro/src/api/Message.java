@@ -77,4 +77,24 @@ public class Message {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
+	
+	@DELETE
+	public Response deleteUser(@PathParam("userId") String id,
+			@QueryParam("idMensaje") @DefaultValue("-1") String message_id) {
+		if(message_id.equals("-1"))
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se envio el id del mensaje a eliminar").build();
+		try {
+			Connection conn = Conexion.getInstancia().getConexion();
+			String sql = "DELETE FROM Soscorro.mensajes WHERE messageID=" + message_id + ";";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			int affectedRows = ps.executeUpdate();
+			if (affectedRows == 1)
+				return Response.status(Response.Status.NO_CONTENT).build();
+			else
+				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();		
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo eliminar el mensaje\n" + e.getStackTrace()).build();
+		}
+	}
 }
