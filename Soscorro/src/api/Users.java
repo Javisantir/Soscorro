@@ -63,9 +63,14 @@ public class Users
 			ResultSet rs = ps.executeQuery();
 			Usuarios users = new Usuarios();
 			ArrayList<Link> lista = users.getUsuarios();
+			String uriStr = "/";
+			if(uriInfo.getAbsolutePath().toString().endsWith("/"))
+			{
+				uriStr = "";
+			}
 			while (rs.next()) 
 			{
-				lista.add(new Link(uriInfo.getAbsolutePath() + "/" + rs.getInt("userId"),"self"));
+				lista.add(new Link(uriInfo.getAbsolutePath() + uriStr + rs.getInt("userId"),"self"));
 			}
 			return Response.status(Response.Status.OK).entity(users).build(); // No se puede devolver el ArrayList (para generar XML)
 		} 
@@ -139,7 +144,7 @@ public class Users
 		System.out.println(user);
 		try {
 			Connection conn = Conexion.getInstancia().getConexion();
-			String sql = "INSERT INTO Usuarios (userId, userName) VALUES (" + user.getID() + ", \"" + user.getName() + "\");";
+			String sql = "INSERT INTO Usuarios (userName) VALUES (\"" + user.getName() +"\");";
 			PreparedStatement ps = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 			int affectedRows = ps.executeUpdate();
 			
@@ -148,8 +153,13 @@ public class Users
 			ResultSet generatedID = ps.getGeneratedKeys();
 			if (generatedID.next()) 
 			{
+				String uriStr = "/";
+				if(uriInfo.getAbsolutePath().toString().endsWith("/"))
+				{
+					uriStr = "";
+				}
 				user.setId(generatedID.getInt(1));
-				String location = uriInfo.getAbsolutePath() + "/" + user.getID();
+				String location = uriInfo.getAbsolutePath() + uriStr + user.getID();
 				return Response.status(Response.Status.CREATED).entity(user).header("Location", location).header("Content-Location", location).build();
 			}
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo crear el usuario").build();

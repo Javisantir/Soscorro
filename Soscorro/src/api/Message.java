@@ -54,9 +54,14 @@ public class Message {
 			ResultSet rs = ps.executeQuery();
 			Mensajes messages = new Mensajes();
 			ArrayList<Link> lista = messages.getUsuarios();
+			String uriStr = "/";
+			if(uriInfo.getAbsolutePath().toString().endsWith("/"))
+			{
+				uriStr = "";
+			}
 			while (rs.next()) 
 			{
-				lista.add(new Link(uriInfo.getAbsolutePath() + "/" + rs.getInt("messageId"),"self"));
+				lista.add(new Link(uriInfo.getAbsolutePath() + uriStr + rs.getInt("messageId"),"self"));
 			}
 			return Response.status(Response.Status.OK).entity(messages).build(); 
 		} 

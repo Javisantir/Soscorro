@@ -49,9 +49,14 @@ public class FriendShip
 			ResultSet rs = ps.executeQuery();
 			Usuarios users = new Usuarios();
 			ArrayList<Link> lista = users.getUsuarios();
+			String uriStr = "/";
+			if(uriInfo.getAbsolutePath().toString().endsWith("/"))
+			{
+				uriStr = "";
+			}
 			while (rs.next()) 
 			{
-				lista.add(new Link(uriInfo.getAbsolutePath() + "/" + rs.getInt("friendId"),"self"));
+				lista.add(new Link(uriInfo.getAbsolutePath() + uriStr + rs.getInt("friendId"),"self"));
 			}
 			return Response.status(Response.Status.OK).entity(users).build(); // No se puede devolver el ArrayList (para generar XML)
 		} 
