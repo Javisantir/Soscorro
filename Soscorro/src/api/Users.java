@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import bbdd.Conexion;
+import clase.datos.Garaje;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,6 +20,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -58,7 +60,7 @@ public class Users
 			int offset = Integer.parseInt(offsetStr);
 			int count = Integer.parseInt(countStr);
 			
-			String sql = "SELECT Usuarios.userId FROM Usuarios WHERE Usuarios.userName LIKE \"%"+ namePattern + "%\" ORDER BY Usuarios.userId ASC LIMIT "+ count +" OFFSET " + offset + ";";
+			String sql = "SELECT userId FROM Soscorro.Usuarios WHERE Usuarios.userName LIKE \"%"+ namePattern + "%\" ORDER BY Usuarios.userId ASC LIMIT "+ count +" OFFSET " + offset + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			Usuarios users = new Usuarios();
@@ -89,13 +91,13 @@ public class Users
 	@GET
 	@Path("{userId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getGaraje(@PathParam("userId") String id) 
+	public Response getUser(@PathParam("userId") String id) 
 	{
 		try 
 		{
 			Connection conn = Conexion.getInstancia().getConexion();
 			int int_id = Integer.parseInt(id);
-			String sql = "SELECT * FROM Usuarios where userId = " + int_id + ";";
+			String sql = "SELECT * FROM Soscorro.Usuarios where userId = " + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) 
@@ -125,7 +127,8 @@ public class Users
 	public Response deleteUser(@PathParam("userId") String id) {
 		try {
 			Connection conn = Conexion.getInstancia().getConexion();
-			String sql = "DELETE FROM Soscorro.Usuarios WHERE userId=" + id + ";";
+			int int_id = Integer.parseInt(id);
+			String sql = "DELETE FROM Soscorro.Usuarios WHERE userId=" + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 1)
@@ -139,7 +142,6 @@ public class Users
 		}
 	}
 	
-	//TODO
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON})
 	public Response addUser(Usuario	user) 
@@ -148,7 +150,7 @@ public class Users
 		System.out.println(user);
 		try {
 			Connection conn = Conexion.getInstancia().getConexion();
-			String sql = "INSERT INTO Usuarios (userName) VALUES (\"" + user.getName() +"\");";
+			String sql = "INSERT INTO Soscorro.Usuarios (userName) VALUES (\"" + user.getName() +"\");";
 			PreparedStatement ps = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 			int affectedRows = ps.executeUpdate();
 			
@@ -163,7 +165,7 @@ public class Users
 					uriStr = "";
 				}
 				user.setId(generatedID.getInt(1));
-				String location = uriInfo.getAbsolutePath() + uriStr + user.getID();
+				String location = uriInfo.getAbsolutePath() + uriStr + user.getId();
 				return Response.status(Response.Status.CREATED).entity(user).header("Location", location).header("Content-Location", location).build();
 			}
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo crear el usuario").build();
@@ -173,6 +175,50 @@ public class Users
 		{
 			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD\n" + e.getStackTrace()).build();
+		}
+	}
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("{userId}")
+	public Response updateUser(@PathParam("userId") String userId, Usuario newUser) 
+	{
+		try {
+			Connection conn = Conexion.getInstancia().getConexion();
+			int int_id = Integer.parseInt(userId);
+			String sql = "SELECT * FROM Usuarios where userId = " + int_id + ";";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			if (!rs.next()) 
+			{
+				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
+			}
+			Usuario oldUser = new Usuario(rs.getInt("userId"), rs.getString("userName"));
+			
+			newUser.setId(oldUser.getId());
+			
+			
+			
+			System.out.println(oldUser); 
+			System.out.println(newUser);
+
+			
+			
+			sql = "UPDATE Soscorro.Usuarios SET `userName`='"+newUser.getName()+"' WHERE `userId`='"+newUser.getId()+"';"; // TODO por lo que sea no actualiza el nombre de usuario
+			ps = conn.prepareStatement(sql);
+			
+			String uriStr = "/";
+			if(uriInfo.getAbsolutePath().toString().endsWith("/"))
+			{
+				uriStr = "";
+			}
+			String location = uriInfo.getAbsolutePath() + uriStr + newUser.getId();
+			return Response.status(Response.Status.OK).entity(newUser).header("Content-Location", location).build();			
+		} 
+		catch (SQLException e) 
+		{
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo actualizar el usuario\n" + e.getStackTrace()).build();
 		}
 	}
 }

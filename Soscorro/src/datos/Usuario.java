@@ -32,7 +32,7 @@ public class Usuario {
 	}
 	
 	@XmlElement(name="id_usuario")
-	public int getID()
+	public int getId()
 	{
 		return id;
 	}

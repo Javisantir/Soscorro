@@ -80,12 +80,14 @@ public class Message {
 	
 	@DELETE
 	public Response deleteUser(@PathParam("userId") String id,
-			@QueryParam("messageId") @DefaultValue("-1") String message_id) {
-		if(message_id.equals("-1"))
+			@QueryParam("messageId") @DefaultValue("-1") String message_id) 
+	{
+		int int_message_id = Integer.parseInt(message_id);
+		if(int_message_id == -1)
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se envio el id del mensaje a eliminar").build();
 		try {
 			Connection conn = Conexion.getInstancia().getConexion();
-			String sql = "DELETE FROM Soscorro.mensajes WHERE messageID=" + message_id + ";";
+			String sql = "DELETE FROM Soscorro.mensajes WHERE messageID=" + int_message_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 1)
