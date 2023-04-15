@@ -80,7 +80,7 @@ public class Message {
 	
 	@DELETE
 	public Response deleteUser(@PathParam("userId") String id,
-			@QueryParam("idMensaje") @DefaultValue("-1") String message_id) {
+			@QueryParam("messageId") @DefaultValue("-1") String message_id) {
 		if(message_id.equals("-1"))
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se envio el id del mensaje a eliminar").build();
 		try {
