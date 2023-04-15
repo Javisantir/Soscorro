@@ -9,23 +9,29 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Mensaje {
 	
 	int mensajeId; 
-	String mensajeContenido;
-	String mensajeFecha;
+	String contenido;
+	String fechaCreacion;
+	String fechaUltimaModificacion;
+	int creatorId;
+	int forumId;
 	
 	public Mensaje() 
 	{}
 	
-	public Mensaje(int id, String mensajeContenido)
+	public Mensaje(int id, String contenido, String fechaCreacion, String fechaUltimaModificacion, int creatorId, int forumId)
 	{
 		this.mensajeId = id;
-		this.mensajeFecha = LocalDate.now().toString(); //TODO mirar esto porque nos raya
-		this.mensajeContenido = mensajeContenido;
+		this.contenido = contenido;
+		this.fechaCreacion = fechaCreacion;
+		this.fechaUltimaModificacion = fechaUltimaModificacion;
+		this.creatorId = creatorId;
+		this.forumId = forumId;
 	}
 	
 	@XmlElement(name="id_mensaje")
 	public int getMensajeID()
 	{
-		return mensajeId;
+		return this.mensajeId;
 	}
 	
 	public void setMensajeId(int id)
@@ -33,25 +39,61 @@ public class Mensaje {
 		this.mensajeId=id;
 	}
 	
-	@XmlElement(name="fecha_mensaje")
-	public String getMensajeFecha()
+	@XmlElement(name="forum_id_mensaje")
+	public int getForumID()
 	{
-		return mensajeFecha;
+		return this.forumId;
 	}
 	
-	public void setMensajeFecha(LocalDate fecha)
+	public void setForumId(int id)
 	{
-		this.mensajeFecha=fecha.now().toString();
+		this.forumId=id;
+	}
+	
+	@XmlElement(name="creator_id_mensaje")
+	public int getCreatorID()
+	{
+		return this.creatorId;
+	}
+	
+	public void setCreatorId(int id)
+	{
+		this.creatorId=id;
+	}
+	
+	@XmlElement(name="fecha_creacion_mensaje")
+	public String getFechaCreacion()
+	{
+		return this.fechaCreacion;
+	}
+	public void setFechaCreacion(String fechaCreacion)
+	{
+		this.fechaCreacion = fechaCreacion;
+	}
+	
+	@XmlElement(name="fecha_ultima_modificacion_mensaje")
+	public String getFechaUltimaModificacion()
+	{
+		return this.fechaUltimaModificacion;
+	}
+	public void setFechaUltimaModificacion(String fechaCreacion)
+	{
+		this.fechaUltimaModificacion = fechaUltimaModificacion;
 	}
 	
 	@XmlElement(name="contenido_mensaje")
 	public String getMensajeContenido()
 	{
-		return mensajeContenido;
+		return this.contenido;
 	}
 	
 	public void setMensajeContenido(String contenido)
 	{
-		this.mensajeContenido=contenido;
+		this.contenido=contenido;
+	}
+	
+	public static LocalDate getCurrentDate()
+	{
+		return LocalDate.now(); //TODO mirar esto porque nos raya
 	}
 }
