@@ -5,16 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import bbdd.Conexion;
-import clase.datos.Garaje;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -30,12 +24,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.naming.NamingContext;
-
-import bbdd.Conexion;
 import datos.Usuario;
 import datos.Usuarios;
-import datos.Amistad;
 import datos.Link;
 
 @Path("/users")
@@ -146,13 +136,12 @@ public class Users
 	@Consumes({MediaType.APPLICATION_JSON})
 	public Response addUser(Usuario	user) 
 	{
-		
 		System.out.println(user);
 		try {
 			Connection conn = Conexion.getInstancia().getConexion();
 			String sql = "INSERT INTO Soscorro.Usuarios (userName) VALUES (\"" + user.getName() +"\");";
-			PreparedStatement ps = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-			int affectedRows = ps.executeUpdate();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
 			
 			// Obtener el ID del elemento recién creado. 
 			// Necesita haber indicado Statement.RETURN_GENERATED_KEYS al ejecutar un statement.executeUpdate() o al crear un PreparedStatement
@@ -169,7 +158,6 @@ public class Users
 				return Response.status(Response.Status.CREATED).entity(user).header("Location", location).header("Content-Location", location).build();
 			}
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo crear el usuario").build();
-			
 		} 
 		catch (SQLException e)
 		{
@@ -195,25 +183,11 @@ public class Users
 				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
 			}
 			Usuario oldUser = new Usuario(rs.getInt("userId"), rs.getString("userName"));
-			
 			newUser.setId(oldUser.getId());
-			
-			
-			
-			System.out.println(oldUser); 
-			System.out.println(newUser);
-
-			
-			
-			sql = "UPDATE Soscorro.Usuarios SET `userName`='"+newUser.getName()+"' WHERE `userId`='"+newUser.getId()+"';"; // TODO por lo que sea no actualiza el nombre de usuario
+			sql = "UPDATE Soscorro.Usuarios SET `userName`='"+newUser.getName()+"' WHERE `userId`='"+newUser.getId()+"';";
 			ps = conn.prepareStatement(sql);
-			
-			String uriStr = "/";
-			if(uriInfo.getAbsolutePath().toString().endsWith("/"))
-			{
-				uriStr = "";
-			}
-			String location = uriInfo.getAbsolutePath() + uriStr + newUser.getId();
+			ps.executeUpdate();
+			String location = uriInfo.getAbsolutePath().toString();
 			return Response.status(Response.Status.OK).entity(newUser).header("Content-Location", location).build();			
 		} 
 		catch (SQLException e) 
