@@ -36,7 +36,7 @@ public class Message {
 	public Message() 
 	{	}
 	
-	@GET
+	@GET //TODO filtro de contenido
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllUsers(@PathParam("userId") String userIdStr,
 			@QueryParam("idCreator") @DefaultValue("") String idStr,

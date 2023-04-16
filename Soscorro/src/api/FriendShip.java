@@ -55,14 +55,9 @@ public class FriendShip
 			ResultSet rs = ps.executeQuery();
 			UserList users = new UserList();
 			ArrayList<Link> lista = users.getUsers();
-			String uriStr = "/";
-			if(uriInfo.getAbsolutePath().toString().endsWith("/"))
-			{
-				uriStr = "";
-			}
 			while (rs.next()) 
 			{
-				lista.add(new Link(uriInfo.getAbsolutePath() + uriStr + rs.getInt("friendId"),"self"));
+				lista.add(new Link(uriInfo.getBaseUri()+ "users" + "/" + rs.getInt("friendId"),"self"));
 			}
 			return Response.status(Response.Status.OK).entity(users).build(); // No se puede devolver el ArrayList (para generar XML)
 		} 
@@ -72,40 +67,6 @@ public class FriendShip
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números").build();
 		} 
 		catch (SQLException e) 
-		{
-			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
-		}
-	}
-	
-	@GET
-	@Path("{friendId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response fetFriends(@PathParam("friendId") String friendId, @PathParam("userId") String userId) 
-	{
-		try 
-		{
-			Connection conn = Connect.getInstance().getConnection();
-			int int_id = Integer.parseInt(friendId);
-			String sql = "SELECT * FROM Soscorro.Users_has_friends WHERE userId= " + userId + " AND friendId = " + int_id + ";";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) 
-			{
-				FriendShipObject fs = new FriendShipObject(rs.getInt("userId"), rs.getInt("friendId"));
-				return Response.status(Response.Status.OK).entity(fs).build();
-			} 
-			else 
-			{
-				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
-			}
-		}
-		catch (NumberFormatException e) 
-		{
-			e.printStackTrace();
-			return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
-		} 
-		catch (SQLException e)
 		{
 			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
