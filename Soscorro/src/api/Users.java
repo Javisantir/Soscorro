@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 
 import bbdd.Connect;
 import data.Link;
+import data.MessageList;
+import data.MessageObject;
+import data.ProfileObject;
 import data.UserList;
 import data.User;
 
@@ -198,5 +201,68 @@ public class Users
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo actualizar el usuario\n" + e.getStackTrace()).build();
 		}
 	}
-}
+	
+	@GET
+	@Path("{userId}/profile")
+	@Produces(MediaType.APPLICATION_JSON)
 
+	public Response getProfile(@PathParam("userId") String id) 
+	{
+		try 
+		{
+			Connection conn = Connect.getInstance().getConnection();
+			int int_id = Integer.parseInt(id);
+			
+			String sql = "SELECT * FROM Soscorro.Users where userId = " + int_id + ";";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			if (!rs.next())
+			{
+				return Response.status(Response.Status.NOT_FOUND).entity("Usuario no encontrado").build();
+			}
+			User user = new User(rs.getInt("userId"), rs.getString("userName"));
+			
+			sql = "SELECT * FROM Soscorro.Messages ORDER BY creationDate DESC LIMIT 1;";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (!rs.next()) 
+            {
+                return Response.status(Response.Status.NOT_FOUND).entity("Mensaje no encontrado").build();
+            }
+            MessageObject ms = new MessageObject(rs.getInt("messageId"), rs.getInt("creatorId"), rs.getInt("forumId"), rs.getString("lastModDate"), rs.getString("creationDate"), rs.getString("content"));
+			
+            sql = "SELECT COUNT(*) FROM Users_has_friends uf JOIN Users u on uf.friendId = u.userId WHERE uf.userId=\"2\";";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (!rs.next()) 
+            {
+            	return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
+            }
+			int friendCount = rs.getInt(1);
+			
+			sql = "SELECT m.* FROM (SELECT uf.friendId as friendId FROM Users_has_friends uf JOIN Users u on uf.friendId = u.userId WHERE uf.userId=\"" + int_id + "\"ORDER BY friendId ASC LIMIT 10 OFFSET 0) friends JOIN Messages m on m.creatorId=friends.friendId;";
+			ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			MessageList messages = new MessageList();
+			ArrayList<Link> lista = messages.getMessages();
+			
+			while (rs.next()) 
+			{
+				lista.add(new Link(uriInfo.getBaseUri()+ "messages/" + rs.getInt("messageId"),"self"));
+			}
+			
+			ProfileObject profile = new ProfileObject(user,ms,friendCount,messages);
+			return Response.status(Response.Status.OK).entity(profile).build();
+		}
+		catch (NumberFormatException e) 
+		{
+			e.printStackTrace();
+			return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
+		} 
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
+		}
+	}
+}
