@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -24,8 +26,9 @@ import bbdd.Connect;
 import data.Link;
 import data.MessageList;
 import data.MessageObject;
+import data.User;
 
-@Path("/users/{userId}/messages")
+@Path("/messages")
 
 public class Message {
 
@@ -38,8 +41,8 @@ public class Message {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	
-	public Response getAllMessages(@PathParam("userId") String userIdStr,
-			@QueryParam("creatorId") @DefaultValue("-1") String idStr, 
+	public Response getAllMessages(@QueryParam("forumId") String userIdStr,
+			@QueryParam("creatorId") @DefaultValue("-1") String idStr,
 			@QueryParam("offset") @DefaultValue("0") String offsetStr,
 			@QueryParam("count") @DefaultValue("10") String countStr,
 			@QueryParam("startDate") @DefaultValue("1900-01-01") String startDateStr,
@@ -130,8 +133,7 @@ public class Message {
 	@DELETE
 	@Path("{messageId}")
 	
-	public Response deleteMessage(@PathParam("userId") String id,
-			@PathParam("messageId") String message_id) 
+	public Response deleteMessage(@PathParam("messageId") String message_id) 
 	{
 		int int_message_id = Integer.parseInt(message_id);
 		try {
@@ -179,6 +181,41 @@ public class Message {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo actualizar el mensaje\n" + e.getStackTrace()).build();
 		}
 	}
+	@POST
+	@Consumes({MediaType.APPLICATION_JSON})
 	
-	//TODO hacer el post
+	public Response createMessage(MessageObject ms) 
+	{
+		System.out.println(ms);
+		try {
+			Connection conn = Connect.getInstance().getConnection();
+			String sql = "INSERT INTO Soscorro.Messages (creatorId,forumId,lastModDate,creationDate,content) VALUES (" + ms.getCreatorID() + ", " + ms.getForumID() +", '" + ms.getLastModDate() + "', '" + ms.getCreationDate() + "', '" + ms.getMessageContent() + "');";
+			System.out.println(sql);
+			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.executeUpdate();
+			
+			// Obtener el ID del elemento recién creado. 
+			// Necesita haber indicado Statement.RETURN_GENERATED_KEYS al ejecutar un statement.executeUpdate() o al crear un PreparedStatement
+			ResultSet generatedID = ps.getGeneratedKeys();
+			if (generatedID.next()) 
+			{
+				String uriStr = "/";
+				if(uriInfo.getAbsolutePath().toString().endsWith("/"))
+				{
+					uriStr = "";
+				}
+				
+				ms.setMessageId(generatedID.getInt(1));
+				
+				String location = uriInfo.getAbsolutePath() + uriStr + ms.getMessageId();
+				return Response.status(Response.Status.CREATED).entity(ms).header("Location", location).header("Content-Location", location).build();
+			}
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo crear el usuario").build();
+		} 
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD\n" + e.getStackTrace()).build();
+		}
+	}
 }
