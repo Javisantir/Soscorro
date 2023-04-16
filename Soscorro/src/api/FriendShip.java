@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
@@ -38,7 +39,8 @@ public class FriendShip
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllFriends(@PathParam("userId") String idStr, @QueryParam("offset") @DefaultValue("0") String offsetStr,
-			@QueryParam("count") @DefaultValue("10") String countStr)
+			@QueryParam("count") @DefaultValue("10") String countStr,
+			@QueryParam("namePattern") @DefaultValue("") String namePattern)
 	{
 		try
 		{
@@ -48,7 +50,7 @@ public class FriendShip
 			int count = Integer.parseInt(countStr);
 			int id = Integer.parseInt(idStr);
 			
-			String sql = "SELECT friendId FROM Users_has_friends WHERE userId=" + id + " ORDER BY friendId ASC LIMIT "+ count +" OFFSET " + offset + ";";
+			String sql = "SELECT uf.friendId as friendId FROM Users_has_friends uf JOIN Users u on uf.friendId = u.userId WHERE uf.userId=" + id + " AND u.userName LIKE \"%" + namePattern + "%\"" + " ORDER BY friendId ASC LIMIT "+ count +" OFFSET " + offset + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			UserList users = new UserList();
@@ -112,31 +114,21 @@ public class FriendShip
 	
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON})
-	public Response addUser(FriendShipObject fs) 
+	public Response addUser(FriendShipObject fs, @PathParam("userId") String id) 
 	{
 		System.out.println(fs);
+		if(fs.getUserId() != Integer.parseInt(id))
+			return Response.status(Response.Status.BAD_REQUEST).entity("No puedes añadir un amigo a otro usuario").build();
 		try {
 			Connection conn = Connect.getInstance().getConnection();
-			String sql = "INSERT INTO Soscorro.Users_has_friends VALUES (" + fs.getUserId() +", " + fs.getFriendId() + ");";
+			String sql = "INSERT INTO Soscorro.Users_has_friends(userId, friendId) VALUES (" + id +", " + fs.getFriendId() + ");";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.executeUpdate();
-			
-			// Obtener el ID del elemento recién creado. 
-			// Necesita haber indicado Statement.RETURN_GENERATED_KEYS al ejecutar un statement.executeUpdate() o al crear un PreparedStatement
-			ResultSet generatedID = ps.getGeneratedKeys();
-			if (generatedID.next()) 
-			{
-				String uriStr = "/";
-				if(uriInfo.getAbsolutePath().toString().endsWith("/"))
-				{
-					uriStr = "";
-				}
-				fs.setUserId(generatedID.getInt(1));
-				fs.setFriendId(generatedID.getInt(2));
-				String location = uriInfo.getAbsolutePath() + uriStr + fs.getUserId();
-				return Response.status(Response.Status.CREATED).entity(fs).header("Location", location).header("Content-Location", location).build();
-			}
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo crear el usuario").build();
+			String location = uriInfo.getBaseUri() + "users/" + fs.getFriendId();
+			UserList listaUsuarios = new UserList();
+			ArrayList<Link> listaLink = listaUsuarios.getUsers();
+			listaLink.add(new Link(location, "self"));
+			return Response.status(Response.Status.CREATED).entity(listaUsuarios).build();
 		} 
 		catch (SQLException e)
 		{

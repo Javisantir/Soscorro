@@ -32,14 +32,14 @@ CREATE TABLE IF NOT EXISTS `Soscorro`.`Users_has_friends` (
   INDEX `fk_Usuarios_has_Usuarios_Usuarios_idx` (`userId` ASC),
   CONSTRAINT `fk_Usuarios_has_Usuarios_Usuarios`
     FOREIGN KEY (`userId`)
-    REFERENCES `Soscorro`.`Usuarios` (`userId`)
+    REFERENCES `Soscorro`.`Users` (`userId`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Usuarios_has_Usuarios_Usuarios1`
     FOREIGN KEY (`friendId`)
-    REFERENCES `Soscorro`.`Usuarios` (`userId`)
+    REFERENCES `Soscorro`.`Users` (`userId`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -58,14 +58,14 @@ CREATE TABLE IF NOT EXISTS `Soscorro`.`Messages` (
   INDEX `fk_mensajes_Usuarios2_idx` (`forumId` ASC),
   CONSTRAINT `fk_mensajes_Usuarios1`
     FOREIGN KEY (`creatorId`)
-    REFERENCES `Soscorro`.`Usuarios` (`userId`)
+    REFERENCES `Soscorro`.`Users` (`userId`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_mensajes_Usuarios2`
     FOREIGN KEY (`forumId`)
-    REFERENCES `Soscorro`.`Usuarios` (`userId`)
+    REFERENCES `Soscorro`.`Users` (`userId`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 INSERT INTO Users (userName)
@@ -74,11 +74,11 @@ VALUES
 ("Victor"),
 ("Andres");
 
-INSERT INTO Users_has_friends
+INSERT INTO Users_has_friends (userId, friendId)
 VALUES 
-(0,1),
-(1,2),
-(2,0);
+(2,1),
+(1,3),
+(2,3);
 
 INSERT INTO Messages(creatorId,forumId,LastModDate,creationDate,content) 
 VALUES 
@@ -87,6 +87,7 @@ VALUES
 (3,1,'2013-11-11','2013-11-11','Buenas tardes');
 
 SELECT * FROM Users;
+	
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

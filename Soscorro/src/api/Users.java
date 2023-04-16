@@ -133,13 +133,13 @@ public class Users
 	
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON})
-	public Response addUser(User	user) 
+	public Response addUser(User user) 
 	{
 		System.out.println(user);
 		try {
 			Connection conn = Connect.getInstance().getConnection();
 			String sql = "INSERT INTO Soscorro.Users (userName) VALUES (\"" + user.getName() +"\");";
-			PreparedStatement ps = conn.prepareStatement(sql);
+			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.executeUpdate();
 			
 			// Obtener el ID del elemento recién creado. 
