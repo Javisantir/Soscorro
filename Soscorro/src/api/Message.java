@@ -136,7 +136,7 @@ public class Message {
 		}
 	}
 	
-	@PUT //TODO probar put
+	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("{messageId}")
@@ -145,7 +145,7 @@ public class Message {
 		try {
 			Connection conn = Connect.getInstance().getConnection();
 			int int_id = Integer.parseInt(messageId);
-			String sql = "SELECT * FROM Socorro.Messages where messageId = " + int_id + ";";
+			String sql = "SELECT * FROM Soscorro.Messages where messageId = " + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (!rs.next()) 

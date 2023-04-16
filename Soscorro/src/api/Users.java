@@ -174,7 +174,7 @@ public class Users
 		try {
 			Connection conn = Connect.getInstance().getConnection();
 			int int_id = Integer.parseInt(userId);
-			String sql = "SELECT * FROM Socorro.Users where userId = " + int_id + ";";
+			String sql = "SELECT * FROM Soscorro.Users where userId = " + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (!rs.next()) 
@@ -183,7 +183,7 @@ public class Users
 			}
 			User oldUser = new User(rs.getInt("userId"), rs.getString("userName"));
 			newUser.setId(oldUser.getId());
-			sql = "UPDATE Soscorro.Usuarios SET `userName`='"+newUser.getName()+"' WHERE `userId`='"+newUser.getId()+"';";
+			sql = "UPDATE Soscorro.Users SET `userName`='"+newUser.getName()+"' WHERE `userId`='"+newUser.getId()+"';";
 			ps = conn.prepareStatement(sql);
 			ps.executeUpdate();
 			String location = uriInfo.getAbsolutePath().toString();
