@@ -82,12 +82,12 @@ public class MessageObject {
 	}
 	
 	@XmlElement(name="content_message")
-	public String getmessageContent()
+	public String getMessageContent()
 	{
 		return this.content;
 	}
 	
-	public void setmessageContent(String content)
+	public void setMessageContent(String content)
 	{
 		this.content=content;
 	}

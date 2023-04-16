@@ -6,9 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -131,6 +133,36 @@ public class Message {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo eliminar el mensaje\n" + e.getStackTrace()).build();
+		}
+	}
+	
+	@PUT //TODO probar put
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("{messageId}")
+	public Response updateUser(@PathParam("messageId") String messageId, MessageObject newMs) 
+	{
+		try {
+			Connection conn = Connect.getInstance().getConnection();
+			int int_id = Integer.parseInt(messageId);
+			String sql = "SELECT * FROM Socorro.Messages where messageId = " + int_id + ";";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			if (!rs.next()) 
+			{
+				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
+			}
+			MessageObject oldMessage = new MessageObject(rs.getInt("messageId"), rs.getInt("creatorId"), rs.getInt("forumId"), rs.getString("lastModDate"), rs.getString("creationDate"), rs.getString("content"));
+			newMs.setMessageId(oldMessage.getMessageId());
+			sql = "UPDATE Soscorro.Messages SET `content`='"+ newMs.getMessageContent()+ "' WHERE `messageId`='"+ newMs.getMessageId()+"';";
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			String location = uriInfo.getAbsolutePath().toString();
+			return Response.status(Response.Status.OK).entity(newMs).header("Content-Location", location).build();			
+		} 
+		catch (SQLException e) 
+		{
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo actualizar el usuario\n" + e.getStackTrace()).build();
 		}
 	}
 }
