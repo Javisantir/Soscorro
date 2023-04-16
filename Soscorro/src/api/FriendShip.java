@@ -79,7 +79,6 @@ public class FriendShip
 	
 	public Response addFriend(FriendShipObject fs, @PathParam("userId") String id) 
 	{
-		System.out.println(fs);
 		if(fs.getUserId() != Integer.parseInt(id))
 			return Response.status(Response.Status.BAD_REQUEST).entity("No puedes añadir un amigo a otro usuario").build();
 		try {

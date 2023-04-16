@@ -139,7 +139,6 @@ public class Users
 	
 	public Response addUser(User user) 
 	{
-		System.out.println(user);
 		try {
 			Connection conn = Connect.getInstance().getConnection();
 			String sql = "INSERT INTO Soscorro.Users (userName) VALUES (\"" + user.getName() +"\");";
