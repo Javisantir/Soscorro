@@ -39,11 +39,12 @@ public class Message {
 	@Produces(MediaType.APPLICATION_JSON)
 	
 	public Response getAllMessages(@PathParam("userId") String userIdStr,
-			@QueryParam("idCreator") @DefaultValue("") String idStr,
+			@QueryParam("idCreator") @DefaultValue("") String idStr, // TODO filtrar por idCreator si procede
 			@QueryParam("offset") @DefaultValue("0") String offsetStr,
 			@QueryParam("count") @DefaultValue("10") String countStr,
 			@QueryParam("startDate") @DefaultValue("1900-01-01") String startDateStr,
-			@QueryParam("endDate") @DefaultValue("2100-01-01") String endDateStr, @QueryParam("contentPattern") @DefaultValue("") String contentPattern)
+			@QueryParam("endDate") @DefaultValue("2100-01-01") String endDateStr,
+			@QueryParam("contentPattern") @DefaultValue("") String contentPattern)
 	{
 		try
 		{
