@@ -186,11 +186,9 @@ public class Message {
 	
 	public Response createMessage(MessageObject ms) 
 	{
-		System.out.println(ms);
 		try {
 			Connection conn = Connect.getInstance().getConnection();
 			String sql = "INSERT INTO Soscorro.Messages (creatorId,forumId,lastModDate,creationDate,content) VALUES (" + ms.getCreatorID() + ", " + ms.getForumID() +", '" + ms.getLastModDate() + "', '" + ms.getCreationDate() + "', '" + ms.getMessageContent() + "');";
-			System.out.println(sql);
 			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.executeUpdate();
 			

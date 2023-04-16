@@ -24,6 +24,7 @@ import javax.ws.rs.core.UriInfo;
 import bbdd.Connect;
 import data.FriendShipObject;
 import data.Link;
+import data.MessageList;
 import data.UserList;
 
 @Path("/users/{userId}/friends")
@@ -123,5 +124,44 @@ public class FriendShip
         }
     }
 	
-	
+	@GET
+	@Path("messages")
+	@Produces(MediaType.APPLICATION_JSON)
+
+	public Response getMessagesFromFriends(@PathParam("userId") String id,
+			@QueryParam("offset") @DefaultValue("0") String offsetStr,
+			@QueryParam("count") @DefaultValue("10") String countStr,
+			@QueryParam("startDate") @DefaultValue("1900-01-01") String startDateStr,
+			@QueryParam("endDate") @DefaultValue("2100-01-01") String endDateStr)
+	{
+		try
+		{
+			int int_user_id = Integer.parseInt(id);
+			int offset = Integer.parseInt(offsetStr);
+			int count = Integer.parseInt(countStr);
+			
+			Connection conn = Connect.getInstance().getConnection();
+			
+			String sql = "SELECT messageId FROM (SELECT * FROM ((SELECT uf.friendId as friendId FROM Users_has_friends uf JOIN Users u on uf.friendId = u.userId WHERE uf.userId=\"" + int_user_id + "\") a JOIN Messages m ON m.forumId=a.friendId) ORDER BY creationDate ASC LIMIT " + count + " OFFSET " + offset + ") a where a.creationDate BETWEEN \"" + startDateStr + "\" AND \"" + endDateStr + "\";";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			MessageList messages = new MessageList();
+			ArrayList<Link> lista = messages.getMessages();
+			while (rs.next()) 
+			{
+				lista.add(new Link(uriInfo.getBaseUri() + "messages/" + rs.getInt("messageId"),"self"));
+			}
+			return Response.status(Response.Status.OK).entity(messages).build(); 
+		} 
+		catch (NumberFormatException e) 
+		{
+			e.printStackTrace();
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números").build();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
+		}
+	}
 }
