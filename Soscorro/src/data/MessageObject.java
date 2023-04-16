@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="message")
-public class Message {
+public class MessageObject {
 	
 	int messageId; 
 	String content;
@@ -15,10 +15,10 @@ public class Message {
 	int creatorId;
 	int forumId;
 	
-	public Message() 
+	public MessageObject() 
 	{}
 	
-	public Message(int id, String content, String creationDate, String lastModDate, int creatorId, int forumId)
+	public MessageObject(int id,int creatorId, int forumIdString, String lastModDate, String creationDate, String content)
 	{
 		this.messageId = id;
 		this.content = content;

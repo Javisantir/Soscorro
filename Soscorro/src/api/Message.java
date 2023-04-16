@@ -20,6 +20,7 @@ import javax.ws.rs.core.UriInfo;
 
 import bbdd.Connect;
 import data.Link;
+import data.MessageObject;
 import data.Messages;
 import data.User;
 
@@ -77,10 +78,45 @@ public class Message {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
+
+	@GET
+    @Path("{messageId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUser(@PathParam("messageId") String id) 
+    {
+        try 
+        {
+            Connection conn = Connect.getInstance().getConnection();
+            int int_id = Integer.parseInt(id);
+            String sql = "SELECT * FROM Soscorro.Messages where messageId = " + int_id + ";";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) 
+            {
+                MessageObject ms = new MessageObject(rs.getInt("messageId"), rs.getInt("creatorId"), rs.getInt("forumId"), rs.getString("lastModDate"), rs.getString("creationDate"), rs.getString("content"));
+                return Response.status(Response.Status.OK).entity(ms).build();
+            } 
+            else 
+            {
+                return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
+            }
+        }
+        catch (NumberFormatException e) 
+        {
+            e.printStackTrace();
+            return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
+        } 
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
+        }
+    }
 	
 	@DELETE
+	@Path("{messageId}")
 	public Response deleteUser(@PathParam("userId") String id,
-			@QueryParam("messageId") @DefaultValue("-1") String message_id) 
+			@PathParam("messageId") @DefaultValue("-1") String message_id) 
 	{
 		int int_message_id = Integer.parseInt(message_id);
 		if(int_message_id == -1)
