@@ -20,8 +20,8 @@ import javax.ws.rs.core.UriInfo;
 
 import bbdd.Connect;
 import data.Link;
+import data.MessageList;
 import data.MessageObject;
-import data.Messages;
 import data.User;
 
 @Path("/users/{userId}/messages")
@@ -54,7 +54,7 @@ public class Message {
 			String sql = "SELECT * FROM Soscorro.Messages WHERE forumId= " + userId + " AND Soscorro.Messages.creationDate BETWEEN '" + startDateStr + "' AND '" + endDateStr + "' LIMIT "+ count +" OFFSET " + offset + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			Messages messages = new Messages();
+			MessageList messages = new MessageList();
 			ArrayList<Link> lista = messages.getMessages();
 			String uriStr = "/";
 			if(uriInfo.getAbsolutePath().toString().endsWith("/"))

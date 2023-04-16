@@ -7,10 +7,10 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "messages")
-public class Messages {
+public class MessageList {
 	private ArrayList<Link> messages;
 	
-	public Messages()
+	public MessageList()
 	{
 		this.messages = new ArrayList<Link>();
 	}
