@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -69,6 +70,29 @@ public class FriendShip
 		{
 			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
+		}
+	}
+	
+	@DELETE
+	public Response deleteUser(@PathParam("userId") String id,
+			@QueryParam("friendId") @DefaultValue("-1") String friend_id) 
+	{
+		int int_friend_id = Integer.parseInt(friend_id);
+		int int_user_id = Integer.parseInt(id);
+		if(int_friend_id == -1)
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se envio el id del amigo a eliminar").build();
+		try {
+			Connection conn = Connect.getInstance().getConnection();
+			String sql = "DELETE FROM Soscorro.Users_has_friends WHERE userId=" + int_user_id + " and friendId=" + int_friend_id + ";";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			int affectedRows = ps.executeUpdate();
+			if (affectedRows == 1)
+				return Response.status(Response.Status.NO_CONTENT).build();
+			else
+				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();		
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo eliminar el amigo\n" + e.getStackTrace()).build();
 		}
 	}
 }

@@ -116,11 +116,9 @@ public class Message {
 	@DELETE
 	@Path("{messageId}")
 	public Response deleteUser(@PathParam("userId") String id,
-			@PathParam("messageId") @DefaultValue("-1") String message_id) 
+			@PathParam("messageId") String message_id) 
 	{
 		int int_message_id = Integer.parseInt(message_id);
-		if(int_message_id == -1)
-			return Response.status(Response.Status.BAD_REQUEST).entity("No se envio el id del mensaje a eliminar").build();
 		try {
 			Connection conn = Connect.getInstance().getConnection();
 			String sql = "DELETE FROM Soscorro.mensajes WHERE messageID=" + int_message_id + ";";
