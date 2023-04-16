@@ -39,12 +39,13 @@ public class Message {
 	@Produces(MediaType.APPLICATION_JSON)
 	
 	public Response getAllMessages(@PathParam("userId") String userIdStr,
-			@QueryParam("idCreator") @DefaultValue("") String idStr, 
+			@QueryParam("creatorId") @DefaultValue("") String idStr, 
 			@QueryParam("offset") @DefaultValue("0") String offsetStr,
 			@QueryParam("count") @DefaultValue("10") String countStr,
 			@QueryParam("startDate") @DefaultValue("1900-01-01") String startDateStr,
 			@QueryParam("endDate") @DefaultValue("2100-01-01") String endDateStr,
-			@QueryParam("contentPattern") @DefaultValue("") String contentPattern)
+			@QueryParam("contentPattern") @DefaultValue("") String contentPattern,
+			@QueryParam("selectMessagesFromIdCreator") @DefaultValue("true") String selectMessagesFromIdCreator) // TODO si vale true = si faler false != en filter
 	{
 		try
 		{
@@ -173,4 +174,6 @@ public class Message {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo actualizar el mensaje\n" + e.getStackTrace()).build();
 		}
 	}
+	
+	//TODO hacer el post
 }
