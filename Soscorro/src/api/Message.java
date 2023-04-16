@@ -24,7 +24,6 @@ import bbdd.Connect;
 import data.Link;
 import data.MessageList;
 import data.MessageObject;
-import data.User;
 
 @Path("/users/{userId}/messages")
 
@@ -38,12 +37,13 @@ public class Message {
 	
 	@GET //TODO filtro de contenido
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllUsers(@PathParam("userId") String userIdStr,
+	
+	public Response getAllMessages(@PathParam("userId") String userIdStr,
 			@QueryParam("idCreator") @DefaultValue("") String idStr,
 			@QueryParam("offset") @DefaultValue("0") String offsetStr,
 			@QueryParam("count") @DefaultValue("10") String countStr,
 			@QueryParam("startDate") @DefaultValue("1900-01-01") String startDateStr,
-			@QueryParam("endDate") @DefaultValue("2100-01-01") String endDateStr)
+			@QueryParam("endDate") @DefaultValue("2100-01-01") String endDateStr, @QueryParam("contentPattern") @DefaultValue("") String contentPattern)
 	{
 		try
 		{
@@ -53,7 +53,7 @@ public class Message {
 			int offset = Integer.parseInt(offsetStr);
 			int count = Integer.parseInt(countStr);
 			
-			String sql = "SELECT * FROM Soscorro.Messages WHERE forumId= " + userId + " AND Soscorro.Messages.creationDate BETWEEN '" + startDateStr + "' AND '" + endDateStr + "' LIMIT "+ count +" OFFSET " + offset + ";";
+			String sql = "SELECT * FROM Soscorro.Messages WHERE forumId= " + userId + " AND content LIKE \"%" + contentPattern + "%\" AND Soscorro.Messages.creationDate BETWEEN '" + startDateStr + "' AND '" + endDateStr + "' LIMIT "+ count +" OFFSET " + offset + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			MessageList messages = new MessageList();
@@ -84,7 +84,8 @@ public class Message {
 	@GET
     @Path("{messageId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(@PathParam("messageId") String id) 
+	
+    public Response getMessage(@PathParam("messageId") String id) 
     {
         try 
         {
@@ -100,14 +101,14 @@ public class Message {
             } 
             else 
             {
-                return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Mensaje no encontrado").build();
             }
         }
         catch (NumberFormatException e) 
-        {
-            e.printStackTrace();
-            return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
-        } 
+		{
+			e.printStackTrace();
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números").build();
+		} 
         catch (SQLException e)
         {
             e.printStackTrace();
@@ -117,7 +118,8 @@ public class Message {
 	
 	@DELETE
 	@Path("{messageId}")
-	public Response deleteUser(@PathParam("userId") String id,
+	
+	public Response deleteMessage(@PathParam("userId") String id,
 			@PathParam("messageId") String message_id) 
 	{
 		int int_message_id = Integer.parseInt(message_id);
@@ -140,7 +142,8 @@ public class Message {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("{messageId}")
-	public Response updateUser(@PathParam("messageId") String messageId, MessageObject newMs) 
+	
+	public Response updateMessage(@PathParam("messageId") String messageId, MessageObject newMs) 
 	{
 		try {
 			Connection conn = Connect.getInstance().getConnection();
@@ -162,7 +165,7 @@ public class Message {
 		} 
 		catch (SQLException e) 
 		{
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo actualizar el usuario\n" + e.getStackTrace()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo actualizar el mensaje\n" + e.getStackTrace()).build();
 		}
 	}
 }

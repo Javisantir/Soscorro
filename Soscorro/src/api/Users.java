@@ -38,6 +38,7 @@ public class Users
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	
 	public Response getAllUsers(@QueryParam("namePattern") @DefaultValue("") String namePattern,
 			@QueryParam("offset") @DefaultValue("0") String offsetStr,
 			@QueryParam("count") @DefaultValue("10") String countStr)
@@ -80,6 +81,7 @@ public class Users
 	@GET
 	@Path("{userId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	
 	public Response getUser(@PathParam("userId") String id) 
 	{
 		try 
@@ -113,6 +115,7 @@ public class Users
 	
 	@DELETE
 	@Path("{userId}")
+	
 	public Response deleteUser(@PathParam("userId") String id) {
 		try {
 			Connection conn = Connect.getInstance().getConnection();
@@ -133,6 +136,7 @@ public class Users
 	
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON})
+	
 	public Response addUser(User user) 
 	{
 		System.out.println(user);
@@ -169,6 +173,7 @@ public class Users
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("{userId}")
+	
 	public Response updateUser(@PathParam("userId") String userId, User newUser) 
 	{
 		try {

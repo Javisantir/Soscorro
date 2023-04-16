@@ -38,6 +38,7 @@ public class FriendShip
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	
 	public Response getAllFriends(@PathParam("userId") String idStr, @QueryParam("offset") @DefaultValue("0") String offsetStr,
 			@QueryParam("count") @DefaultValue("10") String countStr,
 			@QueryParam("namePattern") @DefaultValue("") String namePattern)
@@ -75,7 +76,8 @@ public class FriendShip
 	
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON})
-	public Response addUser(FriendShipObject fs, @PathParam("userId") String id) 
+	
+	public Response addFriend(FriendShipObject fs, @PathParam("userId") String id) 
 	{
 		System.out.println(fs);
 		if(fs.getUserId() != Integer.parseInt(id))
@@ -99,6 +101,7 @@ public class FriendShip
 	}
 	
 	@DELETE
+	
     public Response deleteFriend(@PathParam("userId") String id,
             @QueryParam("friendId") @DefaultValue("-1") String friend_id) 
     {
