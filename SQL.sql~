@@ -14,7 +14,7 @@ USE `Soscorro` ;
 -- -----------------------------------------------------
 -- Table `Soscorro`.`Usuarios`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Soscorro`.`Users` (
+CREATE TABLE IF NOT EXISTS `Soscorro`.`Usuarios` (
   `userId` INT NOT NULL AUTO_INCREMENT,
   `userName` VARCHAR(45) NULL,
   PRIMARY KEY (`userId`))
@@ -46,13 +46,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `Soscorro`.`mensajes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Soscorro`.`Messages` (
-  `messageId` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `Soscorro`.`mensajes` (
+  `messageID` INT NOT NULL AUTO_INCREMENT,
   `creatorId` INT NOT NULL,
   `forumId` INT NOT NULL,
-  `lastModDate` DATE NOT NULL,
-  `creationDate` DATE NOT NULL,
-  `content` TEXT,
+  `fechaUltimaModificacion` DATE NOT NULL,
+  `fechaCreacion` DATE NOT NULL,
+  `contenido` TEXT,
   PRIMARY KEY (`messageID`),
   INDEX `fk_mensajes_Usuarios1_idx` (`creatorId` ASC),
   INDEX `fk_mensajes_Usuarios2_idx` (`forumId` ASC),
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `Soscorro`.`Messages` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-INSERT INTO Users (userName)
+INSERT INTO Usuarios (userName)
 VALUES 
 ("Javi"),
 ("Victor"),
@@ -80,13 +80,11 @@ VALUES
 (1,2),
 (2,0);
 
-INSERT INTO Messages(creatorId,forumId,LastModDate,creationDate,content) 
+INSERT INTO mensajes(creatorId,forumId,fechaUltimaModificacion,fechaCreacion,contenido) 
 VALUES 
 (1,1,'1999-12-10','1999-12-10','Hola que tal'),
 (2,1,'2000-12-11','2000-12-11','Hola buenas tardes'),
-(3,1,'2013-11-11','2013-11-11','Buenas tardes');
-
-SELECT * FROM Users;
+(0,1,'2013-11-11','2013-11-11','Buenas tardes');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
