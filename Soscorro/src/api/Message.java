@@ -35,11 +35,11 @@ public class Message {
 	public Message() 
 	{	}
 	
-	@GET //TODO filtro de contenido
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	
 	public Response getAllMessages(@PathParam("userId") String userIdStr,
-			@QueryParam("idCreator") @DefaultValue("") String idStr, // TODO filtrar por idCreator si procede
+			@QueryParam("idCreator") @DefaultValue("") String idStr, 
 			@QueryParam("offset") @DefaultValue("0") String offsetStr,
 			@QueryParam("count") @DefaultValue("10") String countStr,
 			@QueryParam("startDate") @DefaultValue("1900-01-01") String startDateStr,
@@ -54,8 +54,12 @@ public class Message {
 			int offset = Integer.parseInt(offsetStr);
 			int count = Integer.parseInt(countStr);
 			
-			String sql = "SELECT * FROM Soscorro.Messages WHERE forumId= " + userId + " AND content LIKE \"%" + contentPattern + "%\" AND Soscorro.Messages.creationDate BETWEEN '" + startDateStr + "' AND '" + endDateStr + "' LIMIT "+ count +" OFFSET " + offset + ";";
+			String filter = "";
+			if (!idStr.equals(""))
+				filter = "creatorId=" + idStr + " AND ";
+			String sql = "SELECT * FROM Soscorro.Messages WHERE " + filter + " forumId= " + userId + " AND content LIKE \"%" + contentPattern + "%\" AND Soscorro.Messages.creationDate BETWEEN '" + startDateStr + "' AND '" + endDateStr + "' LIMIT "+ count +" OFFSET " + offset + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
+			System.out.println(sql);
 			ResultSet rs = ps.executeQuery();
 			MessageList messages = new MessageList();
 			ArrayList<Link> lista = messages.getMessages();
