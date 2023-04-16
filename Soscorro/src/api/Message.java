@@ -35,7 +35,7 @@ public class Message {
 	public Message() 
 	{	}
 	
-	@GET //TODO filtro de contenido
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	
 	public Response getAllMessages(@PathParam("userId") String userIdStr,
@@ -126,7 +126,7 @@ public class Message {
 		int int_message_id = Integer.parseInt(message_id);
 		try {
 			Connection conn = Connect.getInstance().getConnection();
-			String sql = "DELETE FROM Soscorro.mensajes WHERE messageID=" + int_message_id + ";";
+			String sql = "DELETE FROM Soscorro.Messages WHERE messageID=" + int_message_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 1)

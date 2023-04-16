@@ -120,7 +120,7 @@ public class Users
 		try {
 			Connection conn = Connect.getInstance().getConnection();
 			int int_id = Integer.parseInt(id);
-			String sql = "DELETE FROM Soscorro.USers WHERE userId=" + int_id + ";";
+			String sql = "DELETE FROM Soscorro.Users WHERE userId=" + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 1)
