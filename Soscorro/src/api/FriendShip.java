@@ -17,9 +17,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import bbdd.Conexion;
-import datos.Link;
-import datos.Usuarios;
+import bbdd.Connect;
+import data.Link;
+import data.UserList;
 
 @Path("/users/{userId}/friends")
 
@@ -38,7 +38,7 @@ public class FriendShip
 	{
 		try
 		{
-			Connection conn = Conexion.getInstancia().getConexion();
+			Connection conn = Connect.getInstance().getConnection();
 			
 			int offset = Integer.parseInt(offsetStr);
 			int count = Integer.parseInt(countStr);
@@ -47,8 +47,8 @@ public class FriendShip
 			String sql = "SELECT friendId FROM Users_has_friends WHERE userId=" + id + " ORDER BY friendId ASC LIMIT "+ count +" OFFSET " + offset + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			Usuarios users = new Usuarios();
-			ArrayList<Link> lista = users.getUsuarios();
+			UserList users = new UserList();
+			ArrayList<Link> lista = users.getUsers();
 			String uriStr = "/";
 			if(uriInfo.getAbsolutePath().toString().endsWith("/"))
 			{

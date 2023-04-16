@@ -1,26 +1,26 @@
-package datos;
+package data;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name="usuario")
-public class Usuario {
+@XmlRootElement(name="user")
+public class User {
 
 	String name;
 	int id; //TODO debemos pensar como meter esto, porque no debes mandar en el post el id
 	
-	public Usuario()
+	public User()
 	{	
 		super();
 	}
 	
-	public Usuario(int id,String name)
+	public User(int id,String name)
 	{
 		this.id=id;
 		this.name=name;
 	}
 	
-	@XmlElement(name="nombre_usuario")
+	@XmlElement(name="name_user")
 	public String getName()
 	{
 		return name;
@@ -31,7 +31,7 @@ public class Usuario {
 		this.name=name;
 	}
 	
-	@XmlElement(name="id_usuario")
+	@XmlElement(name="id_user")
 	public int getId()
 	{
 		return id;
@@ -44,6 +44,6 @@ public class Usuario {
 	
 	public String toString()
 	{
-		return "Usuario con id="+ id +"; name="+name;
+		return "User with id="+ id +"; name="+name;
 	}
 }

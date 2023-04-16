@@ -18,10 +18,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import bbdd.Conexion;
-import datos.Link;
-import datos.Mensajes;
-import datos.Usuarios;
+import bbdd.Connect;
+import data.Link;
+import data.Messages;
+import data.User;
 
 @Path("/users/{userId}/messages")
 
@@ -44,17 +44,17 @@ public class Message {
 	{
 		try
 		{
-			Connection conn = Conexion.getInstancia().getConexion();
+			Connection conn = Connect.getInstance().getConnection();
 			
 			int userId = Integer.parseInt(userIdStr);
 			int offset = Integer.parseInt(offsetStr);
 			int count = Integer.parseInt(countStr);
 			
-			String sql = "SELECT * FROM mensajes WHERE forumId= " + userId + " AND fechaCreacion BETWEEN '" + startDateStr + "' AND '" + endDateStr + "' LIMIT "+ count +" OFFSET " + offset + ";";
+			String sql = "SELECT * FROM Soscorro.Messages WHERE forumId= " + userId + " AND Soscorro.Messages.creationDate BETWEEN '" + startDateStr + "' AND '" + endDateStr + "' LIMIT "+ count +" OFFSET " + offset + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			Mensajes messages = new Mensajes();
-			ArrayList<Link> lista = messages.getUsuarios();
+			Messages messages = new Messages();
+			ArrayList<Link> lista = messages.getMessages();
 			String uriStr = "/";
 			if(uriInfo.getAbsolutePath().toString().endsWith("/"))
 			{
@@ -86,7 +86,7 @@ public class Message {
 		if(int_message_id == -1)
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se envio el id del mensaje a eliminar").build();
 		try {
-			Connection conn = Conexion.getInstancia().getConexion();
+			Connection conn = Connect.getInstance().getConnection();
 			String sql = "DELETE FROM Soscorro.mensajes WHERE messageID=" + int_message_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int affectedRows = ps.executeUpdate();

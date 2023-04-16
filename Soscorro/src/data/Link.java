@@ -1,4 +1,4 @@
-package datos;
+package data;
 
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -10,12 +10,12 @@ import javax.sql.DataSource;
 
 import org.apache.naming.NamingContext;
 
-public class Conexion {
-    private static Conexion instancia;
+public class Connect {
+    private static Connect instance;
     private DataSource ds;
-	private Connection conexion;
+	private Connection connection;
     
-    private Conexion() 
+    private Connect () 
     {
     	InitialContext ctx;
 		try 
@@ -24,7 +24,7 @@ public class Conexion {
 			NamingContext envCtx = (NamingContext) ctx.lookup("java:comp/env");
 
 			ds = (DataSource) envCtx.lookup("jdbc/Soscorro");
-			conexion = ds.getConnection();
+			connection = ds.getConnection();
 		} 
 		catch (NamingException e) 
 		{
@@ -36,15 +36,15 @@ public class Conexion {
 		}
     }
     
-    public static Conexion getInstancia() {
-        if (instancia == null) {
-            instancia = new Conexion();
+    public static Connect getInstance() {
+        if (instance == null) {
+            instance = new Connect();
         }
-        return instancia;
+        return instance;
     }
     
-    public Connection getConexion() 
+    public Connection getConnection() 
     {
-        return conexion;
+        return connection;
     }
 }

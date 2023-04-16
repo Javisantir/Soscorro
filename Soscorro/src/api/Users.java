@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import bbdd.Conexion;
+import bbdd.Connect;
+import data.Link;
+import data.UserList;
+import data.User;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,10 +27,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import datos.Usuario;
-import datos.Usuarios;
-import datos.Link;
-
 @Path("/users")
 public class Users 
 {
@@ -45,16 +44,16 @@ public class Users
 	{
 		try
 		{
-			Connection conn = Conexion.getInstancia().getConexion();
+			Connection conn = Connect.getInstance().getConnection();
 			
 			int offset = Integer.parseInt(offsetStr);
 			int count = Integer.parseInt(countStr);
 			
-			String sql = "SELECT userId FROM Soscorro.Usuarios WHERE Usuarios.userName LIKE \"%"+ namePattern + "%\" ORDER BY Usuarios.userId ASC LIMIT "+ count +" OFFSET " + offset + ";";
+			String sql = "SELECT userId FROM Soscorro.Users WHERE Users.userName LIKE \"%"+ namePattern + "%\" ORDER BY Users.userId ASC LIMIT "+ count +" OFFSET " + offset + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			Usuarios users = new Usuarios();
-			ArrayList<Link> lista = users.getUsuarios();
+			UserList users = new UserList();
+			ArrayList<Link> lista = users.getUsers();
 			String uriStr = "/";
 			if(uriInfo.getAbsolutePath().toString().endsWith("/"))
 			{
@@ -85,14 +84,14 @@ public class Users
 	{
 		try 
 		{
-			Connection conn = Conexion.getInstancia().getConexion();
+			Connection conn = Connect.getInstance().getConnection();
 			int int_id = Integer.parseInt(id);
-			String sql = "SELECT * FROM Soscorro.Usuarios where userId = " + int_id + ";";
+			String sql = "SELECT * FROM Soscorro.Users where userId = " + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) 
 			{
-				Usuario user = new Usuario(rs.getInt("userId"), rs.getString("userName"));
+				User user = new User(rs.getInt("userId"), rs.getString("userName"));
 				return Response.status(Response.Status.OK).entity(user).build();
 			} 
 			else 
@@ -116,9 +115,9 @@ public class Users
 	@Path("{userId}")
 	public Response deleteUser(@PathParam("userId") String id) {
 		try {
-			Connection conn = Conexion.getInstancia().getConexion();
+			Connection conn = Connect.getInstance().getConnection();
 			int int_id = Integer.parseInt(id);
-			String sql = "DELETE FROM Soscorro.Usuarios WHERE userId=" + int_id + ";";
+			String sql = "DELETE FROM Soscorro.USers WHERE userId=" + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 1)
@@ -134,12 +133,12 @@ public class Users
 	
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON})
-	public Response addUser(Usuario	user) 
+	public Response addUser(User	user) 
 	{
 		System.out.println(user);
 		try {
-			Connection conn = Conexion.getInstancia().getConexion();
-			String sql = "INSERT INTO Soscorro.Usuarios (userName) VALUES (\"" + user.getName() +"\");";
+			Connection conn = Connect.getInstance().getConnection();
+			String sql = "INSERT INTO Soscorro.Users (userName) VALUES (\"" + user.getName() +"\");";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.executeUpdate();
 			
@@ -170,19 +169,19 @@ public class Users
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("{userId}")
-	public Response updateUser(@PathParam("userId") String userId, Usuario newUser) 
+	public Response updateUser(@PathParam("userId") String userId, User newUser) 
 	{
 		try {
-			Connection conn = Conexion.getInstancia().getConexion();
+			Connection conn = Connect.getInstance().getConnection();
 			int int_id = Integer.parseInt(userId);
-			String sql = "SELECT * FROM Usuarios where userId = " + int_id + ";";
+			String sql = "SELECT * FROM Socorro.Users where userId = " + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (!rs.next()) 
 			{
 				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
 			}
-			Usuario oldUser = new Usuario(rs.getInt("userId"), rs.getString("userName"));
+			User oldUser = new User(rs.getInt("userId"), rs.getString("userName"));
 			newUser.setId(oldUser.getId());
 			sql = "UPDATE Soscorro.Usuarios SET `userName`='"+newUser.getName()+"' WHERE `userId`='"+newUser.getId()+"';";
 			ps = conn.prepareStatement(sql);
